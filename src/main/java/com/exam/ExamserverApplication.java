@@ -3,12 +3,14 @@ package com.exam;
 import com.exam.entity.Role;
 import com.exam.entity.User;
 import com.exam.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Set;
 
@@ -17,8 +19,12 @@ public class ExamserverApplication implements CommandLineRunner {
 
 	Logger logger= LoggerFactory.getLogger(ExamserverApplication.class);
 
-	@Autowired
-    private UserService userService;
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(ExamserverApplication.class, args);
 
@@ -26,7 +32,7 @@ public class ExamserverApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		User user=new User();
+		/*User user=new User();
 		user.setFirstName("sankhadeep");
 		user.setLastName("Chatterjee");
 		user.setUserName("Nemo");
@@ -43,6 +49,6 @@ public class ExamserverApplication implements CommandLineRunner {
 		user.getRoles().add(role1);
 
 		User user1 = userService.createUser(user);
-		logger.info("User ->{}",user1);
+		logger.info("User ->{}",user1);*/
 	}
 }
