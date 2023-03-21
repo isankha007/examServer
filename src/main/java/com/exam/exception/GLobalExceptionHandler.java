@@ -14,6 +14,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class GLobalExceptionHandler {
 
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<ApiResponse> handleGeneralRuntimeException(RuntimeException ex) {
+		String message = ex.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message, true);
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ApiResponse> resourceNotFoundHandler(ResourceNotFoundException ex) {
 		String message=ex.getMessage();

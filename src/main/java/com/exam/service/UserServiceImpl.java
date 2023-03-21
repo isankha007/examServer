@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,8 +35,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) {
-        User byUserName = this.userRepository.findByUserName(user.getUsername())
-                .orElseThrow(()->new ResourceNotFoundException("User", "email", user.getUsername()));
+        User byUserName = this.userRepository.findByEmail(user.getEmail())
+                .orElseThrow(()->new ResourceNotFoundException("User", "email", user.getEmail()));
         if(byUserName!=null){
             System.out.println("User is already there");
             throw new RuntimeException("User Already Present");
@@ -51,8 +52,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUser(String userName) {
-        return userRepository.findByEmail(userName).
-                orElseThrow(()->new ResourceNotFoundException("User", "email", userName));
+        return userRepository.findByUserName(userName).
+                orElseThrow(()->new ResourceNotFoundException("User", "username", userName));
     }
 
     @Override
@@ -62,6 +63,12 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDto registerNewUser(UserDto userDto) {
+
+        Optional<User> user1 = userRepository.findByEmail(userDto.getEmail());
+        if(user1.isPresent()){
+            throw new RuntimeException("User Already exist ");
+        }
+
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         User user = modelMapper.map(userDto, User.class);
 
