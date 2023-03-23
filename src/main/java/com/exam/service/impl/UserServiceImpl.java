@@ -1,4 +1,4 @@
-package com.exam.service;
+package com.exam.service.impl;
 
 import com.exam.config.AppConstants;
 import com.exam.entity.Role;
@@ -7,7 +7,7 @@ import com.exam.exception.ResourceNotFoundException;
 import com.exam.payload.UserDto;
 import com.exam.repository.RoleRepository;
 import com.exam.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import com.exam.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -35,19 +34,19 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) {
-        User byUserName = this.userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()->new ResourceNotFoundException("User", "email", user.getEmail()));
-        if(byUserName!=null){
-            System.out.println("User is already there");
+        Optional<User> byUserName = this.userRepository.findByEmail(user.getEmail());
+        //..orElseThrow(()->new ResourceNotFoundException("User", "email", user.getEmail()));
+        if(byUserName.isPresent()){
+            //System.out.println("User is already there");
             throw new RuntimeException("User Already Present");
         }else {
 //            for(Role role:roles){
 //                roleRepository.save(role);
 //            }
            // user.getRoles().addAll(roles);
-            byUserName=userRepository.save(user);
+            byUserName= Optional.of(userRepository.save(user));
         }
-        return byUserName;
+        return byUserName.get();
     }
 
     @Override
